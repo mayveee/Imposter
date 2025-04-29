@@ -1,0 +1,15 @@
+certifi==2025.4.14
+charset-normalizer==3.3.2
+easyocr==1.7.1
+idna==3.7
+numpy==1.26.4
+opencv-python==4.9.0.80
+openai==1.14.3
+Pillow==10.3.0
+requests==2.31.0
+scipy==1.13.0
+torch==2.2.2+cpu
+torchaudio==2.2.2+cpu
+torchvision==0.17.2+cpu
+tqdm==4.66.2
+urllib3==2.2.1
