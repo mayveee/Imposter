@@ -31,20 +31,19 @@ export default function Upload() {
 
         try {
             setLoading(true)
-            const response = await fetch('https://your-server.com/upload', {
+            const response = await fetch('http://127.0.0.1:8000/upload', {
                 method: 'POST',
                 body: formData,
             })
             if (!response.ok) throw new Error('업로드 실패')
             
-             // ✅ 서버에서 분석 결과 JSON을 받음
             const resultJson = await response.json()
 
-            // ✅ 기존 저장 데이터와 병합
             const existing = (await localforage.getItem<any[]>('analysisResults')) || []
-            await localforage.setItem('analysisResults', [...existing, ...resultJson])
+            await localforage.setItem('analysisResults', [...existing, resultJson])
             alert('업로드 및 저장 완료!')
         } catch (err) {
+            console.error(err)
             alert('업로드 중 오류가 발생했습니다.')
         } finally {
             setLoading(false)
