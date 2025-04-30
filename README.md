@@ -1,3 +1,17 @@
+# run fastAPI
+```
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn server:app --reload
+```
+
+# run web
+```
+npm install
+npm run dev
+```
+
 # 🧠 Imposter Backend - Setup Guide
 
 이 문서는 **img2plan_prototype.py** 등 Imposter 프로젝트의 백엔드 코드를 실행하기 위한 개발 환경 구축 절차를 설명합니다.
