@@ -24,32 +24,59 @@ export default function Upload() {
     }
 
     const uploadImages = async () => {
-        if (imageFiles.length === 0) return alert('이미지를 선택해주세요.')
-
-        const formData = new FormData()
-        imageFiles.forEach(file => formData.append('images', file))
-
+        if (imageFiles.length === 0) return alert('이미지를 선택해주세요.');
+      
+        const formData = new FormData();
+        imageFiles.forEach(file => formData.append('images', file));
+      
         try {
-            setLoading(true)
+            setLoading(true);
             const response = await fetch('http://127.0.0.1:8000/upload', {
                 method: 'POST',
                 body: formData,
-            })
-            if (!response.ok) throw new Error('업로드 실패')
-            
-            const resultJson = await response.json()
-
-            const existing = (await localforage.getItem<any[]>('analysisResults')) || []
-            await localforage.setItem('analysisResults', [...existing, resultJson])
-            alert('업로드 및 저장 완료!')
+            });
+            if (!response.ok) throw new Error('업로드 실패');
+        
+            const resultJson = await response.json();
+            await saveImages(resultJson);
+            alert('업로드 및 저장 완료!');
         } catch (err) {
-            console.error(err)
-            alert('업로드 중 오류가 발생했습니다.')
+            console.error(err);
+            alert('업로드 중 오류가 발생했습니다.');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
-
+    };
+      
+    const saveImages = async (resultJson: any) => {
+        const { timestamp, results } = resultJson;
+      
+        // 에러 없는 항목만 저장
+        const successful = results
+          .filter((item: any) => item.json && !item.error)
+          .map((item: any) => ({
+            timestamp,
+            filename: item.filename,
+            ...item.json,
+          }));
+      
+        // 에러가 있는 항목 콘솔에 출력
+        const failed = results.filter((item: any) => item.error);
+        if (failed.length > 0) {
+          console.warn("저장에 실패한 파일들:");
+          failed.forEach((item: any) => {
+            console.warn(`- ${item.filename}: ${item.error}`);
+          });
+        }
+      
+        if (successful.length === 0) {
+            return;
+        }
+      
+        const existing = (await localforage.getItem<any[]>("analysisResults")) || [];
+        await localforage.setItem("analysisResults", [...existing, ...successful]);
+    };      
+    
     return (
         <div className="flex flex-col min-h-screen bg-gray-100">
             <div className="flex-1 overflow-y-auto px-4 py-6">
