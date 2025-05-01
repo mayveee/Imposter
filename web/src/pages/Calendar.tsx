@@ -50,17 +50,27 @@ export default function PosterCalendar() {
   return (
     <div>
       <FullCalendar
-      plugins={[dayGridPlugin, interactionPlugin]}
-      initialView="dayGridMonth"
-      locale="ko"
-      events={events}
-      height="auto"
-      eventDisplay="block"
-      fixedWeekCount={true} // 모든 달 6주로 고정
-      displayEventTime={false}// 이벤트에 시간 빼고 이름만 표시
-      dayMaxEventRows={2}// 하루 이벤트 줄 수로 제한
-      dayMaxEvents={2}// 하루 이벤트 개수로 제한
-      dateClick={handleDateClick}
+        plugins={[dayGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        locale="ko"
+        events={events}
+        height="auto"
+        eventDisplay="block"
+        fixedWeekCount={true} // 모든 달 6주로 고정
+        displayEventTime={false}// 이벤트에 시간 빼고 이름만 표시
+        dayMaxEventRows={2}// 하루 이벤트 줄 수로 제한
+        dayMaxEvents={2}// 하루 이벤트 개수로 제한
+        headerToolbar={{ // title box 순서
+          start: 'prev',
+          center: 'title',
+          end: 'today next'
+        }}
+        titleFormat={(date) => `${date.date.year}.${date.date.month + 1}`}// 년.월 을 2025.5
+        dayCellContent={(arg) => arg.date.getDate().toString()} // '일' 글자 제거
+        moreLinkContent={(args) => { // + 1 more 글자 제거
+          return `+${args.num}`;
+        }}
+        dateClick={handleDateClick}        
       />
 
       {isModalOpen && (
