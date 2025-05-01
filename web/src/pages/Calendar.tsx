@@ -1,108 +1,95 @@
-// src/pages/calendar.tsx (또는 지정한 위치)
 import { useEffect, useState } from 'react'
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
 import localforage from 'localforage'
+import { PosterData } from '../types/PosterData'
+import { jsonToCalendarEvent } from '../utils/jsonToCalendarEvents'
+import './Calendar.css'
 
-type PosterData = {
-  timestamp: string
-  filename: string
-  legend: string
-  title: string
-  timestart: string
-  timeend: string
-  place: string
-  summary: string
-}
-
-// for test
-const TEST_DATA: PosterData[] = [
-  {
-    timestamp: "2025-04-30T 14:45:00",
-    filename: "poster1.png",
-    legend: "설명회",
-    title: "AI 인턴십 설명회",
-    timestart: "2025-05-04 14:00",
-    timeend: "2025-05-04 16:00",
-    place: "공학관 101호",
-    summary: "AI 기업 인턴십 설명 안내"
-  },
-  {
-    timestamp: "2025-04-29T 10:00:00",
-    filename: "poster2.jpg",
-    legend: "공모전",
-    title: "캡스톤 디자인 아이디어 공모전",
-    timestart: "2025-05-10 09:00",
-    timeend: "2025-05-10 12:00",
-    place: "창의관 301호",
-    summary: "창의적인 아이디어를 발굴하는 공모전"
-  }
-]
-
-export default function Calendar() {
-  const [posters, setPosters] = useState<PosterData[]>([])
+export default function PosterCalendar() {
+  const [events, setEvents] = useState<any[]>([])
+  const [clickedDateEvents, setClickedDateEvents] = useState<any[]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [clickedDate, setClickedDate] = useState<string | null>(null)
 
   const loadData = async () => {
     const loadedData = await localforage.getItem<PosterData[]>('posterData')
-    if (loadedData){
-      setPosters(loadedData)
+    if (loadedData) {
+      const calEvents = jsonToCalendarEvent(loadedData)
+      setEvents(calEvents)
     }
-    else setPosters([])
+    else {
+      setEvents([])
+    }
   }
-
-  const clearData = async () => {
-    await localforage.removeItem('posterData')
-    await loadData()
-  }
-
-  const addSampleData = async () => {
-    const stored = await localforage.getItem<PosterData[]>('posterData')
-    const updated = stored ? [...stored, ...TEST_DATA] : TEST_DATA
-    await localforage.setItem('posterData', updated)
-    await loadData()
-  }
-  
 
   useEffect(() => {
     loadData()
   }, [])
 
+  const handleDateClick = (arg: { dateStr: string }) => {
+    const selected = events.filter(ev => {
+      const start = new Date(ev.start)
+      const end = new Date(ev.end)
+      const target = new Date(arg.dateStr)
+      target.setHours(0, 0, 0, 0)
+      return target >= start && target <= end
+    })
+    setClickedDate(arg.dateStr)
+    setClickedDateEvents(selected)
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setClickedDate(null)
+    setClickedDateEvents([])
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100 px-4 py-6">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-4">포스터 업로드 기록</h1>
+    <div>
+      <FullCalendar
+      plugins={[dayGridPlugin, interactionPlugin]}
+      initialView="dayGridMonth"
+      locale="ko"
+      events={events}
+      height="auto"
+      eventDisplay="block"
+      fixedWeekCount={true} // 모든 달 6주로 고정
+      displayEventTime={false}// 이벤트에 시간 빼고 이름만 표시
+      dayMaxEventRows={2}// 하루 이벤트 줄 수로 제한
+      dayMaxEvents={2}// 하루 이벤트 개수로 제한
+      dateClick={handleDateClick}
+      />
 
-      <div className="flex gap-4 mb-6">
-        <button
-          onClick={clearData}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          로컬 DB 초기화
-        </button>
-        <button
-          onClick={addSampleData}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          샘플 데이터 추가
-        </button>
-      </div>
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2 className="modal-title">📅 {clickedDate} 일정</h2>
 
-      <div className="space-y-4">
-        {posters.map((item, idx) => { 
-          console.log(item)
-          return (
-          <div key={idx} className="bg-white rounded-lg p-4 shadow-sm border">
-            <div className="text-sm text-gray-500">업로드 시각</div>
-            <div className="text-gray-800 font-medium mt-1">
-              {item.timestamp}
-            </div>
-            <div className="mt-2 text-sm text-gray-600">
-              <p><strong>제목:</strong> {item.title}</p>
-              <p><strong>분류:</strong> {item.legend}</p>
-              <p><strong>일정:</strong> {item.timestart} ~ {item.timeend}</p>
-              <p><strong>장소:</strong> {item.place}</p>
-              <p><strong>요약:</strong> {item.summary}</p>
-            </div>
+            {clickedDateEvents.length > 0 ? (
+              <ul className="event-list">
+                {clickedDateEvents.map((e, idx) => (
+                  <li key={idx} className="event-item">
+                    <div className="event-title">
+                      <strong>{e.title}</strong>
+                    </div>
+                    <div className="event-time">⏰ {e.extendedProps.timestart} ~ {e.extendedProps.timeend}</div>
+                    {e.extendedProps.place && (
+                      <div className="event-place">📍 {e.extendedProps.place}</div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>해당 날짜에 일정이 없습니다.</p>
+            )}
+
+            <button className="modal-close-btn" onClick={closeModal}>닫기</button>
           </div>
-        )})}
-      </div>
-    </div>
+        </div>
+      )}
+    </div>   
   )
 }

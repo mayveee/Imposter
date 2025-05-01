@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import Upload from './pages/Upload'
 import Calendar from './pages/Calendar'
 import TopNav from './components/TopNav'
+import CalendarTest from "./pages/CalendarTest";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/calendar" element={<Calendar />} />
+          <Route path="/calendarTest" element={<CalendarTest />} />
         </Routes>
       </div>
     </>

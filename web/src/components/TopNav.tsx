@@ -8,6 +8,7 @@ export default function TopNav() {
         { path: "/", label: "Home" },
         { path: "/upload", label: "Upload" },
         { path: "/calendar", label: "Calendar" },
+        { path: "/calendarTest", label: "CalendarTest"}
     ];
 
     return (
