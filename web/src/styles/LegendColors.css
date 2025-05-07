@@ -1,0 +1,24 @@
+.legend-공모전 {
+    background-color: #ffe0e0 !important;
+    color: #d32f2f !important;
+}
+  
+.legend-설명회 {
+    background-color: #e0f7fa !important;
+    color: #00796b !important;
+}
+  
+.legend-부트캠프 {
+    background-color: #fff4c2 !important;
+    color: #ff9800 !important;
+}
+  
+.legend-교육 {
+    background-color: #f3e8ff !important;
+    color: #673ab7 !important;
+}
+  
+.legend-기타 {
+    background-color: #e0ecff !important;
+    color: #1565c0 !important;
+}

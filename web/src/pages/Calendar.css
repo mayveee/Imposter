@@ -79,14 +79,14 @@
 
 .fc .fc-button:active,
 .fc .fc-button.fc-button-active {
-  background-color: #4b9ce2 !important;
-  box-shadow: none !important;
-  transform: none !important;
+    background-color: #4b9ce2 !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .fc-event-main,
 .fc-event-title {
-  color: inherit !important;
+    color: inherit !important;
 }
 
 /* 캘린더 일별 칸 높이 고정 이벤트 3개 기준으로 */
@@ -139,77 +139,3 @@
 .fc .fc-daygrid-day:nth-child(7n) .fc-daygrid-day-number {
     color: #3b82f6; /* 파란색 (Tailwind blue-500) */
 }
-
-/* legend별 색상 변경 */
-.legend-공모전 {
-    background-color: #ffe0e0 !important;
-    color: #d32f2f !important;
-    font-weight: 600;
-}
-  
-.legend-설명회 {
-    background-color: #e0f7fa !important;
-    color: #00796b !important;
-    font-weight: 600;
-}
-  
-.legend-부트캠프 {
-    background-color: #fff4c2 !important;
-    color: #ff9800 !important;
-    font-weight: 600;
-}
-  
-.legend-교육 {
-    background-color: #f3e8ff !important;
-    color: #673ab7 !important;
-    font-weight: 600;
-}
-  
-.legend-기타 {
-    background-color: #e0ecff !important;
-    color: #1565c0 !important;
-    font-weight: 600;
-}
-  
-
-/* 모달 관련 css */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
-    background: white;
-    width: 100%;
-    max-width: 480px;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    animation: slideUp 0.2s ease-out;
-  }
-  
-/* 슬라이드 애니메이션 */
-@keyframes slideUp {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0%);
-    }
-}
-  
-.modal-close-btn {
-    margin-top: 16px;
-    background-color: #4b9ce2;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
-}   

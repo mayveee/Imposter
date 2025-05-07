@@ -30,7 +30,7 @@ const TEST_DATA: PosterData[] = [
     legend: "기타",
     title: "천원의 아침밥",
     timestart: "2025-04-10 09:00",
-    timeend: "2025-06-31 12:00",
+    timeend: "2025-06-30 12:00",
     place: "제 2학생회관",
     summary: "아침밥 공짜!!"
   },

@@ -5,13 +5,15 @@ import interactionPlugin from '@fullcalendar/interaction'
 import localforage from 'localforage'
 import { PosterData } from '../types/PosterData'
 import { jsonToCalendarEvent } from '../utils/jsonToCalendarEvents'
+import { overlay } from 'overlay-kit'
 import './Calendar.css'
+import PosterOverlay from '../components/PosterOverlay'
+import '../styles/LegendColors.css'
+import { isDateInRange } from '../utils/dateUtils'
+import { DateClickArg } from '@fullcalendar/interaction'
 
 export default function PosterCalendar() {
   const [events, setEvents] = useState<any[]>([])
-  const [clickedDateEvents, setClickedDateEvents] = useState<any[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [clickedDate, setClickedDate] = useState<string | null>(null)
 
   const loadData = async () => {
     const loadedData = await localforage.getItem<PosterData[]>('posterData')
@@ -28,23 +30,23 @@ export default function PosterCalendar() {
     loadData()
   }, [])
 
-  const handleDateClick = (arg: { dateStr: string }) => {
-    const selected = events.filter(ev => {
-      const start = new Date(ev.start)
-      const end = new Date(ev.end)
-      const target = new Date(arg.dateStr)
-      target.setHours(0, 0, 0, 0)
-      return target >= start && target <= end
-    })
-    setClickedDate(arg.dateStr)
-    setClickedDateEvents(selected)
-    setIsModalOpen(true)
-  }
+  const handleDateClick = (arg: DateClickArg) => {
 
-  const closeModal = () => {
-    setIsModalOpen(false)
-    setClickedDate(null)
-    setClickedDateEvents([])
+    const selected = events.filter(ev => {
+      return isDateInRange(arg.dateStr, ev.extendedProps.timestart, ev.extendedProps.timeend)
+    })
+
+    overlay.open(({ isOpen, close, unmount }) => (
+      <PosterOverlay
+        isOpen={isOpen}
+        dateStr={arg.dateStr}
+        events={selected}
+        onClose={() => {
+          close()
+          unmount()
+        }}
+      />
+    ))
   }
 
   return (
@@ -72,34 +74,6 @@ export default function PosterCalendar() {
         }}
         dateClick={handleDateClick}        
       />
-
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="modal-title">📅 {clickedDate} 일정</h2>
-
-            {clickedDateEvents.length > 0 ? (
-              <ul className="event-list">
-                {clickedDateEvents.map((e, idx) => (
-                  <li key={idx} className="event-item">
-                    <div className="event-title">
-                      <strong>{e.title}</strong>
-                    </div>
-                    <div className="event-time">⏰ {e.extendedProps.timestart} ~ {e.extendedProps.timeend}</div>
-                    {e.extendedProps.place && (
-                      <div className="event-place">📍 {e.extendedProps.place}</div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>해당 날짜에 일정이 없습니다.</p>
-            )}
-
-            <button className="modal-close-btn" onClick={closeModal}>닫기</button>
-          </div>
-        </div>
-      )}
     </div>   
   )
 }
