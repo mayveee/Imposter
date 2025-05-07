@@ -2,7 +2,6 @@ import { renderValue } from "../utils/renderValue"
 import "./PosterOverlay.css"
 import "../styles/LegendColors.css"
 import { motion } from 'framer-motion'
-import { useEffect, useState } from "react"
 
 type PosterOverlayProps = {
     isOpen: boolean

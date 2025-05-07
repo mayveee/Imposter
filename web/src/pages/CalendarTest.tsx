@@ -19,8 +19,8 @@ const TEST_DATA: PosterData[] = [
     filename: "poster2.jpg",
     legend: "공모전",
     title: "캡스톤 디자인 아이디어 공모전",
-    timestart: "2025-05-10 09:00",
-    timeend: "2025-05-31 12:00",
+    timestart: "2025-05-10",
+    timeend: "2025-05-31",
     place: "창의관 301호",
     summary: "창의적인 아이디어를 발굴하는 공모전"
   },

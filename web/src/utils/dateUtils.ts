@@ -10,7 +10,6 @@ export function isDateInRange(dateStr: string, startStr: string, endStr: string)
 
     const start = parse(startStr, 'yyyy-MM-dd HH:mm', new Date())
     const end = parse(endStr, 'yyyy-MM-dd HH:mm', new Date())
-
     if (!isValid(start) || !isValid(end)) return false
 
     return start <= dayEnd && end >= dayStart

@@ -31,9 +31,9 @@ export default function PosterCalendar() {
   }, [])
 
   const handleDateClick = (arg: DateClickArg) => {
-
     const selected = events.filter(ev => {
-      return isDateInRange(arg.dateStr, ev.extendedProps.timestart, ev.extendedProps.timeend)
+      console.log(arg.dateStr, ev.start, ev.end)
+      return isDateInRange(arg.dateStr, ev.start, ev.end)
     })
 
     overlay.open(({ isOpen, close, unmount }) => (
